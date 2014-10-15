@@ -3,7 +3,7 @@
 // Author      : Clemens, Benesch
 // Version     :
 // Copyright   :
-// Description : Hello World in C++, Ansi-style
+// Description : A simple FTP-Server, VSYS exercise
 //============================================================================
 
 #include <iostream>
@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
 	int port;
 	string _port;
 	stringstream convert;
+	Server::Server server;
 
 	//check if the required parameters are passed
 	if(argc != 3){
@@ -44,6 +45,9 @@ int main(int argc, char *argv[]) {
 	baseDir = (string)argv[2];
 
 	cout << "port = " << port << "; dir = " << baseDir << endl;
+
+	server = new Server::Server(port, baseDir);
+	server.start();
 
 	return 0;
 }
