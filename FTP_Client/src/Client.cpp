@@ -2,17 +2,24 @@
  * Client.cpp
  *
  *  Created on: 10.10.2014
- *      Author: regenesis
+ *      Author: Alexander Benesch
  */
 
 #include "Client.h"
 
-Client::Client() {
-	// TODO Auto-generated constructor stub
-
+Client::Client(std::string ip, int port) {
+	this->ipAdress = ip;
+	this->port = port;
 }
 
 Client::~Client() {
 	// TODO Auto-generated destructor stub
 }
 
+int Client::clientStart() {
+	Socket *socket = new Socket(ipAdress, port);
+
+
+
+	return 0;
+}

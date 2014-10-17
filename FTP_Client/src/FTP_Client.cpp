@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : FTP_Client.cpp
-// Author      : Clemens, Benesch
+// Author      : Alexander Benesch, Clemens Grabmann
 // Version     :
 // Copyright   : 
 // Description : Hello World in C++, Ansi-style
@@ -9,6 +9,9 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+
+#include "Client.h"
+
 using namespace std;
 
 void printUsage(char *programName);
@@ -17,6 +20,7 @@ int main(int argc, char *argv[]) {
 	string ip;
 	int port;
 	string _port;
+	Client *client;
 
 	// checks if required parameters are passed
 	if (argc != 3) {
@@ -44,7 +48,9 @@ int main(int argc, char *argv[]) {
 	// debug message
 	//cout << "IP Adress: " << ip << endl << "Port: " << port << endl;
 
+	client = new Client(ip, port);
 
+	client->clientStart();
 
 	return 0;
 }
