@@ -10,16 +10,21 @@
 namespace Server{
 
 Server::Server(int port, std::string dir) {
-	this->mainSocket = new Socket(port);
+	this->mainSocket = new MainSocket(port);
 	this->filemanager = new Filemanager(dir);
 }
 
 Server::~Server() {
-	// TODO Auto-generated destructor stub
+	delete this->mainSocket;
+	delete this->filemanager;
 }
 
 void Server::start(){
-	//TODO start for the server
+	ConnectionSocket *conn;
+	struct sockaddr_in *cliaddress;
+	while(true){
+		conn = new ConnectionSocket(this->mainSocket->sAccept(cliaddress));
+	}
 }
 
 }

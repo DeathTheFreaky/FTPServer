@@ -17,8 +17,8 @@ namespace Server{
 
 class Server {
 private:
-	Socket mainSocket;
-	Filemanager filemanager;
+	MainSocket *mainSocket;
+	Filemanager *filemanager;
 protected:
 public:
 	Server(int port, std::string dir);

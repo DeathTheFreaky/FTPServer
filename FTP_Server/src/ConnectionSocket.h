@@ -13,14 +13,15 @@ namespace Server {
 class ConnectionSocket {
 private:
 	int socketID;
+	Filemanager *filemanager;
 protected:
 
 public:
-	ConnectionSocket(int socketID);
+	ConnectionSocket(int socketID, Filemanager *filemanager);
 	virtual ~ConnectionSocket();
 
-	bool send();
-	bool sendFile();
+	bool send(std::string *msg);
+	bool sendFile(File *file);
 	bool recv();
 	bool recvFile();
 };

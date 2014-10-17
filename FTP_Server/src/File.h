@@ -9,13 +9,12 @@
 #define FILE_H_
 
 #include <string>
-#include <fstream>
 
 namespace Server {
 
 class File {
 private:
-	std::fstream *file;
+	FILE *file;
 	std::string *name;
 	int size;
 protected:

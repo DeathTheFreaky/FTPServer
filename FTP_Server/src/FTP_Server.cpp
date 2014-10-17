@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : FTP_Server.cpp
-// Author      : Clemens, Benesch
+// Author      : Alexander Benesch, Clemens Grabmann
 // Version     :
 // Copyright   :
 // Description : A simple FTP-Server, VSYS exercise
@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <cstdlib>
 #include "Server.h"
 using namespace std;
 
@@ -19,28 +20,28 @@ int main(int argc, char *argv[]) {
 	int port;
 	string _port;
 	stringstream convert;
-	Server::Server server;
+	Server::Server *server;
 
 	//check if the required parameters are passed
 	if(argc != 3){
 		printUsage(argv[0]);
-		return 1;
+		exit(1);
 	}
 
 	//check if port is a number
 	_port = (string)argv[1];
 	convert << _port;
 	if(!(convert >> port)){
-		cout << "Error: The port must be a number." << endl;
+		cerr << "Error: The port must be a number." << endl;
 		printUsage(argv[0]);
-		return 2;
+		exit(2);
 	}
 
 	//check if port is between 1024 and 65535
 	if(!(port >= 1024 && port <= 65535)){
-		cout << "Error: The port must be between 1024 and 65535." << endl;
+		cerr << "Error: The port must be between 1024 and 65535." << endl;
 		printUsage(argv[0]);
-		return 3;
+		exit(3);
 	}
 
 	baseDir = (string)argv[2];
@@ -48,7 +49,7 @@ int main(int argc, char *argv[]) {
 	cout << "port = " << port << "; dir = " << baseDir << endl;
 
 	server = new Server::Server(port, baseDir);
-	server.start();
+	server->start();
 
 	delete server;
 
@@ -61,5 +62,5 @@ int main(int argc, char *argv[]) {
  * 		char *programName: points to an array with the program name
  */
 void printUsage(char *programName){
-	cout << "Usage: " << programName << " <PORT> <DIR>" << endl;
+	cerr << "Usage: " << programName << " <PORT> <DIR>" << endl;
 }

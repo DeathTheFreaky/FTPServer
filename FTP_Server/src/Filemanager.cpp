@@ -10,7 +10,7 @@
 namespace Server{
 
 Filemanager::Filemanager(std::string baseDir) {
-	this->baseDir = baseDir;
+	this->baseDir = opendir(baseDir.c_str());
 }
 
 Filemanager::~Filemanager() {

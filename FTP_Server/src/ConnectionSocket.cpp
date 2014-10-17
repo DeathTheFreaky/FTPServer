@@ -9,9 +9,9 @@
 
 namespace Server {
 
-ConnectionSocket::ConnectionSocket() {
-	// TODO Auto-generated constructor stub
-
+ConnectionSocket::ConnectionSocket(int socketID, Filemanager *filemanager) {
+	this->socketID = socketID;
+	this->filemanager = filemanager;
 }
 
 ConnectionSocket::~ConnectionSocket() {
