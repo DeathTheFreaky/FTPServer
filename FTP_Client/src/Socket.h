@@ -10,6 +10,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <errno.h>
+#include <iostream>
+#include <cstring>
 
 #ifndef SOCKET_H_
 #define SOCKET_H_
