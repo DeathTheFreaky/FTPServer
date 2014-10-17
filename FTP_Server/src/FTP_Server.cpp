@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include "Server.h"
 using namespace std;
 
 void printUsage(char *programName);
@@ -48,6 +49,8 @@ int main(int argc, char *argv[]) {
 
 	server = new Server::Server(port, baseDir);
 	server.start();
+
+	delete server;
 
 	return 0;
 }

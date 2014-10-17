@@ -10,8 +10,8 @@
 
 #include <string>
 #include <thread>
-#include "Socket.h"
 #include "Filemanager.h"
+#include "MainSocket.h"
 
 namespace Server{
 

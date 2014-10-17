@@ -5,15 +5,15 @@
  *      Author: clemens
  */
 
-#include "Socket.h"
+#include "MainSocket.h"
 
 namespace Server{
 
-Socket::Socket(int port) {
+MainSocket::MainSocket(int port) {
 	this->port = port;
 }
 
-Socket::~Socket() {
+MainSocket::~MainSocket() {
 	// TODO Auto-generated destructor stub
 }
 
