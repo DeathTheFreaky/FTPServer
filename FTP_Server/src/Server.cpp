@@ -23,7 +23,8 @@ void Server::start(){
 	ConnectionSocket *conn;
 	struct sockaddr_in *cliaddress;
 	while(true){
-		conn = new ConnectionSocket(this->mainSocket->sAccept(cliaddress));
+		conn = new ConnectionSocket(this->mainSocket->sAccept(cliaddress), this->filemanager);
+		//std::thread(&ConnectionSocket::start, *conn);
 	}
 }
 

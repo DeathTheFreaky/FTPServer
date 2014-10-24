@@ -10,20 +10,24 @@
 
 namespace Server {
 
+#include "Filemanager.h"
+#include "File.h"
+
 class ConnectionSocket {
 private:
 	int socketID;
 	Filemanager *filemanager;
+
+	bool send(std::string *msg);
+	bool send(Server::File *file);
+	bool recv();
 protected:
 
 public:
 	ConnectionSocket(int socketID, Filemanager *filemanager);
 	virtual ~ConnectionSocket();
 
-	bool send(std::string *msg);
-	bool sendFile(File *file);
-	bool recv();
-	bool recvFile();
+	void start();
 };
 
 }

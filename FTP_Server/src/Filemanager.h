@@ -10,14 +10,13 @@
 
 #include <string>
 #include <vector>
-#include <dirent.h>
 #include "File.h"
 
 namespace Server{
 
 class Filemanager {
 private:
-	DIR *baseDir;
+	std::string baseDir;
 protected:
 
 public:
