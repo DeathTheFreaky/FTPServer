@@ -17,7 +17,7 @@ class Client {
 public:
 	Client(std::string ip, int port);
 	virtual ~Client();
-	int clientStart();
+	void clientStart();
 private:
 	std::string ipAdress;
 	int port;

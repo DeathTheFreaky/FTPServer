@@ -20,7 +20,13 @@ class Socket {
 public:
 	Socket(std::string ip, int port);
 	virtual ~Socket();
-	int conn();
+
+	bool conn();
+	void closeSocket();
+	void sendCommand(std::string comm);
+	int getData();
+	int putData();
+
 private:
 	int create_socket;
 	int port;

@@ -20,16 +20,18 @@ Socket::~Socket() {
 	// TODO Auto-generated destructor stub
 }
 
-int Socket::conn() {
+bool Socket::conn() {
 	if ((create_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		std::cerr << "Socket error" << std::endl;
-		return -1;
+		return false;
 	}
 
+	std::cout << "DEBUG: begin connection..." << std::endl;
 	memset(&address, 0, sizeof(address));
 	address.sin_family = AF_INET;
 	address.sin_port = htons(port);
 	inet_aton(ip.c_str(), &address.sin_addr);
+	std::cout << "DEBUG: memset - inet_aton" << std::endl;
 
 	if(connect(create_socket, (struct sockaddr*) &address, sizeof(address)) == 0) {
 		std::cout << "Connection with server " << inet_ntoa (address.sin_addr) << " established" << std::endl;
@@ -40,15 +42,25 @@ int Socket::conn() {
 		}
 	} else {
 		std::cerr << "Connect error - no server available" << std::endl;
-		return -1;
+		return false;
 	}
+	return true;
+}
 
-	do {
-		std::cout << "Send message: " << std::endl;
-		std::cin >> buffer;
-		send(create_socket, buffer.c_str(), buffer.length(), 0);
-	} while (buffer.compare("quit\n") != 0);
+void Socket::closeSocket() {
+	close(create_socket);
+}
 
-	close (create_socket);
+void Socket::sendCommand(std::string comm) {
+
+}
+
+int Socket::putData() {
+
+	return 0;
+}
+
+int Socket::getData() {
+
 	return 0;
 }

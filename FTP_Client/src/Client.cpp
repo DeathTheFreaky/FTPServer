@@ -16,10 +16,23 @@ Client::~Client() {
 	// TODO Auto-generated destructor stub
 }
 
-int Client::clientStart() {
+void Client::clientStart() {
+	std::cout << "DEBUG: starting client..." << endl;
 	Socket *socket = new Socket(ipAdress, port);
+	std::cout << "DEBUG: created socket" << endl;
+	std::string input = "";
+	if (socket->conn() == true) {
+		std::cout << "DEBUG: established connection" << endl;
+		while (input.compare("QUIT") != 0) {
+			std::cout << "Please enter command: " << endl;
+			std::cin >> input;
+			socket->sendCommand(input);
 
 
-
-	return 0;
+		}
+		socket->closeSocket();
+		return;
+	}
+	std::cout << "DEBUG: could not connect socket" << std::endl;
+	return;
 }
