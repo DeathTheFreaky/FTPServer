@@ -10,24 +10,24 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <dirent.h>
+#include <sys/stat.h>
 #include "File.h"
-
-namespace Server{
 
 class Filemanager {
 private:
-	std::string baseDir;
+	std::string *baseDir;
+	DIR *dir;
 protected:
 
 public:
-	Filemanager(std::string baseDir);
+	Filemanager(std::string *baseDir);
 	virtual ~Filemanager();
 
 	bool isValid();
 	std::vector<std::string>* getFilelist();
 	File* getFile(std::string);
 };
-
-}
 
 #endif /* FILEMANAGER_H_ */

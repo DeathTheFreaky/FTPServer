@@ -7,9 +7,12 @@
 
 #include "Server.h"
 
-namespace Server{
-
-Server::Server(int port, std::string dir) {
+/**
+ * Parameter:
+ * 		port: The port the server should listen at
+ * 		dir: The pointer to the string where the path to the used directory is saved
+ */
+Server::Server(int port, std::string *dir) {
 	this->mainSocket = new MainSocket(port);
 	this->filemanager = new Filemanager(dir);
 }
@@ -19,13 +22,18 @@ Server::~Server() {
 	delete this->filemanager;
 }
 
+/**
+ * This method starts the server.
+ * The server starts to accept incoming clients and processes them.
+ */
 void Server::start(){
 	ConnectionSocket *conn;
 	struct sockaddr_in *cliaddress;
 	while(true){
-		conn = new ConnectionSocket(this->mainSocket->sAccept(cliaddress), this->filemanager);
-		//std::thread(&ConnectionSocket::start, *conn);
+		std::cout << "DEBUG: wait accept" << std::endl;
+		conn = new ConnectionSocket(this->mainSocket->sAccept(&cliaddress), this->filemanager);
+		std::cout << "DEBUG: accepted" <<std::endl;
+		conn->start();
 	}
 }
 
-}

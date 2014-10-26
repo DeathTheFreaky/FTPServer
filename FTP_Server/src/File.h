@@ -10,20 +10,14 @@
 
 #include <string>
 
-namespace Server {
-
 class File {
 private:
-	FILE *file;
 	std::string *name;
-	int size;
 protected:
 
 public:
 	File(std::string *name);
 	virtual ~File();
 };
-
-}
 
 #endif /* FILE_H_ */

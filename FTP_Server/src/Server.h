@@ -12,8 +12,7 @@
 #include <thread>
 #include "Filemanager.h"
 #include "MainSocket.h"
-
-namespace Server{
+#include "ConnectionSocket.h"
 
 class Server {
 private:
@@ -21,12 +20,11 @@ private:
 	Filemanager *filemanager;
 protected:
 public:
-	Server(int port, std::string dir);
+	Server(int port, std::string *dir);
 	virtual ~Server();
 
 	void start();
 };
 
-}
 
 #endif /* SERVER_H_ */

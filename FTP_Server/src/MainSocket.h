@@ -13,12 +13,13 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
-namespace Server{
+#include <unistd.h>
+#include <errno.h>
+#include <cstring>
 
 class MainSocket {
 private:
-	int socket;
+	int s;
 	socklen_t addrlen;
 	struct sockaddr_in address;
 	int port;
@@ -27,9 +28,8 @@ public:
 	MainSocket(int port);
 	virtual ~MainSocket();
 
-	int sAccept(struct sockaddr_in *cliaddress);
+	int sAccept(struct sockaddr_in **cliaddress);
 };
 
-}
 
 #endif /* MAINSOCKET_H_ */

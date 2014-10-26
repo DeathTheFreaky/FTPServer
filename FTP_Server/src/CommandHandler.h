@@ -8,18 +8,33 @@
 #ifndef COMMANDHANDLER_H_
 #define COMMANDHANDLER_H_
 
-namespace Server {
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
+#include "ConnectionSocket.h"
+#include "Filemanager.h"
+
+class ConnectionSocket;
 
 class CommandHandler {
 private:
+	ConnectionSocket *conn;
+	Filemanager *mang;
 
+	void error(std::string *command);
+	void list();
+	void get();
+	void put();
+	void quit();
 protected:
 
 public:
-	CommandHandler();
+	CommandHandler(ConnectionSocket *conn, Filemanager *mang);
 	virtual ~CommandHandler();
+
+	void process(std::string *errorcmd);
 };
 
-}
 
 #endif /* COMMANDHANDLER_H_ */

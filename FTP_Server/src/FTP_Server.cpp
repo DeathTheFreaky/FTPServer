@@ -16,11 +16,11 @@ using namespace std;
 void printUsage(char *programName);
 
 int main(int argc, char *argv[]) {
-	string baseDir;
+	string *baseDir;
 	int port;
 	string _port;
 	stringstream convert;
-	Server::Server *server;
+	Server *server;
 
 	//check if the required parameters are passed
 	if(argc != 3){
@@ -44,13 +44,15 @@ int main(int argc, char *argv[]) {
 		exit(3);
 	}
 
-	baseDir = (string)argv[2];
+	baseDir = new string;
+	baseDir->assign(argv[2]);
 
-	cout << "port = " << port << "; dir = " << baseDir << endl;
+	cout << "port = " << port << "; dir = " << *baseDir << endl;
 
-	server = new Server::Server(port, baseDir);
+	server = new Server(port, baseDir);
 	server->start();
 
+	delete baseDir;
 	delete server;
 
 	return 0;
