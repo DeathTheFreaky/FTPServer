@@ -73,9 +73,11 @@ void ConnectionSocket::sendData(std::string *msg){
 	int msglength = msg->length();
 	while(msglength != sended){
 		s = send(this->socketID, &msg->c_str()[sended], (msglength - sended), 0);
-		sended += s;
-		std::cout << "msglength: " << msglength << "; sended: " << sended << std::endl;
-		for(int i = 0; i < 10000000; i++){}
+		if(s != -1){
+			sended += s;
+		}
+		std::cout << "msglength: " << msglength << "; sended: " << sended << " send returned: " << s << std::endl;
+		for(int i = 0; i < 100000000; i++){}
 	}
 	std::cout << "DEBUG-ConnectionSocket-sendData: sended: " << *msg << "; with length: " << sended << std::endl;
 }
