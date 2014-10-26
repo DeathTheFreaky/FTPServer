@@ -6,6 +6,7 @@
  */
 
 #include <string>
+#include <locale>
 
 #include "Socket.h"
 using namespace std;
@@ -21,6 +22,8 @@ public:
 private:
 	std::string ipAdress;
 	int port;
+	std::string toUpper(std::string);
+	bool quit;
 };
 
 #endif /* CLIENT_H_ */

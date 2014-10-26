@@ -9,7 +9,9 @@
 
 File::File() {
 	// TODO Auto-generated constructor stub
-
+	this->file = NULL;
+	this->name = "";
+	this->size = 0;
 }
 
 File::~File() {

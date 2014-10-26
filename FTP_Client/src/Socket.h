@@ -12,9 +12,12 @@
 #include <errno.h>
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
 
 #ifndef SOCKET_H_
 #define SOCKET_H_
+
+#define BUF 1024
 
 class Socket {
 public:
@@ -24,16 +27,24 @@ public:
 	bool conn();
 	void closeSocket();
 	void sendCommand(std::string comm);
-	int getData();
-	int putData();
+	void receiveAnswer();
+	void getData(int len);
+	void putData();
+	void showList();
+	void quit();
+	int getStatus();
+	int getLength();
+	void err();
 
 private:
 	int create_socket;
 	int port;
 	std::string ip;
 	struct sockaddr_in address;
-	std::string buffer;
+	char buffer[BUF];
 	int size;
+	int status;
+	int len;
 };
 
 #endif /* SOCKET_H_ */
