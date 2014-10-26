@@ -41,7 +41,6 @@ private:
 	int port;
 	std::string ip;
 	struct sockaddr_in address;
-	char buffer[BUF];
 	int size;
 	int status;
 	int len;

@@ -22,42 +22,74 @@ Socket::~Socket() {
 	// TODO Auto-generated destructor stub
 }
 
+/**
+ * Use:
+ * 		used to connect to Server
+ * Parameter: none
+ */
 bool Socket::conn() {
-	if ((create_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+	char buffer[BUF] = {};
+
+	if ((create_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {	// error when trying to create socket??
 		std::cerr << "Socket error" << std::endl;
 		return false;
 	}
 
 	//std::cout << "DEBUG: begin connection..." << std::endl;
-	memset(&address, 0, sizeof(address));
-	address.sin_family = AF_INET;
-	address.sin_port = htons(port);
-	inet_aton(ip.c_str(), &address.sin_addr);
+	memset(&address, 0, sizeof(address));			//
+	address.sin_family = AF_INET;					//
+	address.sin_port = htons(port);					//
+	inet_aton(ip.c_str(), &address.sin_addr);		//
 
 	std::cout << "Connecting to server ..." << std::endl;
 
+	// trying to connect to Server
 	if(connect(create_socket, (struct sockaddr*) &address, sizeof(address)) == 0) {
 		std::cout << "Connection with server " << inet_ntoa (address.sin_addr) << " established" << std::endl << std::endl;
-		size = recv(create_socket, &buffer, BUF-1, 0);
-		if(size > 0) {
-			buffer[size]= '\0';
-	        std::cout << buffer;
+		int recvd = 0;
+		while (recvd != BUF) {
+			size = recv(create_socket, &buffer, BUF-1, 0);		// trying to read from stream / WELCOMEMESSAGE
+			if(size > 0) {
+				buffer[size]= '\0';
+				std::string welcome = (std::string)buffer;
+				std::cout << welcome.erase(';');
+			}
+			recvd += size;
+			for (int i = 0; i <= 100000000; i++) {}
+			std::cout << "DEBUG-conn: recvd = " << recvd << std::endl;
 		}
-	} else {
+		std::cout << "WTF?! size = " << size << "msg = " << buffer << std::endl;
+	} else {		// couldn't connect to server socket
 		std::cerr << "Connect error - no server available" << std::endl;
 		return false;
 	}
 	return true;
 }
 
-void Socket::closeSocket() {	// finished
+/**
+ * Use:
+ * 		closes client-socket
+ */
+void Socket::closeSocket() {
 	close(create_socket);
 }
 
-void Socket::sendCommand(std::string comm) {	// finished
+/**
+ * Use:
+ * 		used to send command to server
+ * Parameter:
+ * 		comm: command to be sent
+ */
+void Socket::sendCommand(std::string comm) {
 	send(this->create_socket, comm.c_str(), comm.length(), 0);
+	std::cout << "sendComm: DEBUG: command sent" << std::endl;
 }
 
+/**
+ * Use:
+ * 		used to receive answer from server
+ * Parameter: none
+ */
 void Socket::receiveAnswer() {	// work in progress
 	char length[BUF] = {};
 	//char space = '*';
@@ -96,8 +128,9 @@ int Socket::getLength() {	// finished
 	return len;
 }
 
+
 void Socket::putData() {	// work in progress
-	char put = '3';
+	//char put = '3';
 	char message[BUF];
 
 	// code = 3
@@ -118,6 +151,7 @@ void Socket::putData() {	// work in progress
 	return;
 }
 
+
 void Socket::getData(int len) {	// work in progress
 	char get = '2';
 	// code = 2, länge = len
@@ -135,6 +169,11 @@ void Socket::getData(int len) {	// work in progress
 	return;
 }
 
+/**
+ * Use:
+ * 		used to get and display list of files from server
+ * Parameter: none
+ */
 void Socket::showList() {	// work in progress?
 	char message[BUF];
 	char list = '1';
@@ -142,7 +181,7 @@ void Socket::showList() {	// work in progress?
 	send(this->create_socket, &list, 1, 0);
 
 	int s = recv(create_socket, &message, len, 0);
-	if(s > 0) {		//ne while schleife drumherum weil nachricht zu lang sein könnte??
+	if(s > 0) {
 		message[size]= '\0';
 		std::cout << message;
 	}
@@ -153,7 +192,12 @@ void Socket::quit() {	// finished
 	closeSocket();
 }
 
-void Socket::err() {	// finished??
+/**
+ * Use:
+ * 		error messages
+ * Parameter: none
+ */
+void Socket::err() {
 	char err = '5';
 	//char _len[BUF];
 	//recv(create_socket, &_len, BUF-1, 0);

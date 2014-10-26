@@ -26,7 +26,7 @@ void Client::clientStart() {
 		//std::cout << "DEBUG: established connection" << endl;
 		while (!quit) {
 			std::cout << "Please enter command: ";
-			std::getline(std::cin, input);
+			std::getline(std::cin, input);	//zeilenweises einlesen der Eingabe
 			//std::cout << "DEBUG-Before Send: " << input << std::endl;
 			socket->sendCommand(input);
 			socket->receiveAnswer();
@@ -58,15 +58,6 @@ void Client::clientStart() {
 		socket->closeSocket();	// is das überhaupt möglich, weil wegen socket->quit() ?? o.O
 		return;
 	}
-	std::cout << "DEBUG: could not connect socket" << std::endl;
+	std::cout << "clientStart: DEBUG: could not connect socket" << std::endl;
 	return;
-}
-
-std::string Client::toUpper(std::string in) {
-	std::locale loc;
-	std::string _in = in;
-	for (unsigned int i = 0; i <= in.length(); i++) {
-		_in[i] = std::toupper(_in[i], loc);
-	}
-	return _in;
 }
