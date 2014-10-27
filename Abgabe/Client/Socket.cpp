@@ -48,7 +48,7 @@ bool Socket::conn() {
 		std::cout << "Connection with server " << inet_ntoa (address.sin_addr) << " established" << std::endl << std::endl;
 		int recvd = 0;
 		while (recvd != BUF) {
-			size = recv(create_socket, &buffer, BUF, 0);		// trying to read from stream / WELCOMEMESSAGE
+			size = recv(create_socket, &buffer, BUF-1, 0);		// trying to read from stream / WELCOMEMESSAGE
 			if(size > 0) {
 				buffer[size]= '\0';
 				std::string welcome = (std::string)buffer;

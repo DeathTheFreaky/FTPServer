@@ -44,6 +44,10 @@ void ConnectionSocket::welcome(){
 	wel.append("PUT <filename>\n");
 	wel.append("QUIT\n");
 	wel.append("------------------------------------\n");
+	while(wel.length() != BUF){
+		wel.append(";");
+		std::cout << wel.length() << std::endl;
+	}
 	sendData(&wel);
 }
 
@@ -68,12 +72,11 @@ void ConnectionSocket::sendData(std::string *msg){
 	int sended = 0, s = 0;
 	int msglength = msg->length();
 	while(msglength != sended){
-		s = send(this->socketID, &msg[sended], (msglength - sended), 0);
+		s = send(this->socketID, &msg->c_str()[sended], (msglength - sended), 0);
 		if(s != -1){
 			sended += s;
 		}
-		perror("Chalo");
-		std::cout << "msglength: " << msglength << "; sended: " << sended << " send returned: " << s << "; error: " << errno << std::endl;
+		std::cout << "msglength: " << msglength << "; sended: " << sended << " send returned: " << s << std::endl;
 		for(int i = 0; i < 100000000; i++){}
 	}
 	std::cout << "DEBUG-ConnectionSocket-sendData: sended: " << *msg << "; with length: " << sended << std::endl;

@@ -28,7 +28,7 @@ Server::~Server() {
  */
 void Server::start(){
 	ConnectionSocket *conn;
-	struct sockaddr_in cliaddress;
+	struct sockaddr_in *cliaddress;
 	while(true){
 		std::cout << "DEBUG: wait accept" << std::endl;
 		conn = new ConnectionSocket(this->mainSocket->sAccept(&cliaddress), this->filemanager);

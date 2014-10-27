@@ -41,7 +41,7 @@ MainSocket::~MainSocket() {
  * Parameter:
  * 		cliaddress: a pointer to the pointer of the struct where the client address information should be put
  */
-int MainSocket::sAccept(struct sockaddr_in *cliaddress){
-	return accept(this->s, (struct sockaddr *) cliaddress, &this->addrlen);
+int MainSocket::sAccept(struct sockaddr_in **cliaddress){
+	return accept(this->s, (struct sockaddr *) *cliaddress, &this->addrlen);
 }
 

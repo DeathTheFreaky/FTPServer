@@ -28,7 +28,7 @@ public:
 	MainSocket(int port);
 	virtual ~MainSocket();
 
-	int sAccept(struct sockaddr_in *cliaddress);
+	int sAccept(struct sockaddr_in **cliaddress);
 };
 
 
