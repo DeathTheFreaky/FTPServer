@@ -25,10 +25,15 @@ void Client::clientStart() {
 	if (socket->conn() == true) {
 		//std::cout << "DEBUG: established connection" << endl;
 		while (!quit) {
-			std::cout << "Please enter command: ";
-			std::getline(std::cin, input);	//zeilenweises einlesen der Eingabe
-			//std::cout << "DEBUG-Before Send: " << input << std::endl;
+			std::cout << "Please enter command: " << std::endl;
+			//std::cout << "start: DEBUG: " << input << std::endl;
+			input.clear();
+			while(input.empty()) {
+				std::getline(std::cin, input);	//zeilenweises einlesen der Eingabe
+				//std::cout << "DEBUG-Before Send: " << input << std::endl;
+			}
 			socket->sendCommand(input);
+			std::cout << std::endl;
 			socket->receiveAnswer();
 
 			switch(socket->getStatus()) {
@@ -36,7 +41,7 @@ void Client::clientStart() {
 				socket->showList();
 				break;
 			case 2: // GET
-				socket->getData(socket->getLength()); // length?
+				socket->getData(); // length?
 				break;
 			case 3:	// PUT
 				socket->putData();
@@ -51,11 +56,9 @@ void Client::clientStart() {
 			default:
 				std::cerr << "An unknown error occured" << std::endl;
 				break;
-
 			}
-
 		}
-		socket->closeSocket();	// is das überhaupt möglich, weil wegen socket->quit() ?? o.O
+		std::cout << "Client successfully shut down." << std::endl;
 		return;
 	}
 	std::cout << "clientStart: DEBUG: could not connect socket" << std::endl;

@@ -13,6 +13,9 @@
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
+#include <fstream>
+#include <sstream>
+#include <cstdio>
 
 #ifndef SOCKET_H_
 #define SOCKET_H_
@@ -28,7 +31,7 @@ public:
 	void closeSocket();
 	void sendCommand(std::string comm);
 	void receiveAnswer();
-	void getData(int len);
+	void getData();
 	void putData();
 	void showList();
 	void quit();
@@ -44,6 +47,7 @@ private:
 	int size;
 	int status;
 	int len;
+	std::string fileName;
 };
 
 #endif /* SOCKET_H_ */
