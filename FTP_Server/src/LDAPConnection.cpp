@@ -38,16 +38,19 @@ LDAPConnection::~LDAPConnection(){
 bool LDAPConnection::auth(std::string *username, std::string *pw){
 	int rc = 0;
 	LDAPMessage *result, *entry;
-	std::string filter = "(";
+	std::string filter = "(uid=";
 	filter.append(*username);
 	filter.append(")");
 
 	rc = ldap_search_s(this->ld, SEARCHBASE, SCOPE, filter.c_str(), this->attribs, 0, &result);
 	if(rc != LDAP_SUCCESS){
+		std::cout << ldap_err2string(rc) << std::endl;
+		perror("unable to search");
 		return false;
 	}
 
 	if(ldap_count_entries(this->ld, result) != 1){
+		std::cout << "to many results" << std::endl;
 		return false;
 	}
 
@@ -57,15 +60,14 @@ bool LDAPConnection::auth(std::string *username, std::string *pw){
 	LDAP *ldp;
 	ldap_initialize(&ldp, LDAP_HOST);
 	if(ldp == NULL){
-		std::cerr << "ldap_initialization failed" << std::endl;
+		std::cerr << "ldap_initialization for auth failed" << std::endl;
 		return false;
 	}
-
-	std::cout << "connected to LDAP-server." << std::endl;
 
 	rc = ldap_simple_bind_s(ldp, dn.c_str(), pw->c_str());
 
 	if(rc != LDAP_SUCCESS){
+		std::cout << ldap_err2string(rc) << std::endl;
 		std::cerr << "could not login to LDAP-server." << std::endl;
 		ldap_unbind(ldp);
 		return false;

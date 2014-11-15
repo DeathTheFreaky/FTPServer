@@ -27,7 +27,7 @@ void CommandHandler::process(std::string *command){
 	temp = command->substr(0, command->find_first_of(' '));
 	std::string errorcmd = temp;
 	std::transform(temp.begin(), temp.end(), temp.begin(), toupper);
-	if(temp.compare("LOGIN") == 0){
+	if(temp.compare("LOGIN") == 0 && !this->loggedIn){
 		login();
 	}else if(temp.compare("LIST") == 0 && this->loggedIn){
 		list();
@@ -40,7 +40,7 @@ void CommandHandler::process(std::string *command){
 	}else if(temp.compare("QUIT") == 0){
 		quit();
 	}else if(!this->loggedIn){
-		std::string errormsg = "You have to LOGIN first to get access to other commands then \"QUIT\".\n";
+		std::string errormsg = "You have to \"LOGIN\" first to get access to other commands then \"QUIT\".\n";
 		error(&errormsg);
 	}else{
 		std::string errormsg = "The command \"";
@@ -67,7 +67,7 @@ void CommandHandler::login(){
 		return;
 	}
 	temp = init.substr(0, init.find_first_of(' '));
-	init = init.substr(init.find_first_of(' '));
+	init = init.substr(init.find_first_of(' ')+1);
 	bool auth = this->ldapcon->auth(&temp, &init);
 	if(auth){
 		init.assign("0");
