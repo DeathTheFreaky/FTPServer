@@ -159,11 +159,13 @@ int Socket::getLength() {	// finished
  * Parameters: none
  */
 void Socket::putData() {	// work in progress
+	std::cout << "putData" << std::endl;
 	//char put = '3';
 	char error = '5';
 	std::string _mes = "";
 	char message[BUF] = {};
 	std::ifstream is;
+	int percent = 0;
 
 	int s = recv(create_socket, &message, BUF-1, 0);
 	//std::cout << "putData: DEBUG: s = " << s << std::endl;
@@ -190,8 +192,7 @@ void Socket::putData() {	// work in progress
 		//std::cout << "putData: DEBUG: stringstream: " << ss << std::endl;
 		//std::cout << "putData: DEBUG: stringstream: " << ss.str() << std::endl;
 
-		_mes.assign("3");
-		_mes.append(" ");
+		_mes.assign("3 ");
 		_mes.append(ss.str());
 		//std::cout << "putData: DEBUG: _mes= " << _mes << std::endl;
 
@@ -222,11 +223,15 @@ void Socket::putData() {	// work in progress
 			//std::cout << "putData: DEBUG: Sending block..." << std::endl;
 			if (length - sent >= 1024) {
 				sent += send(this->create_socket, message, 1024, 0);
-				std::cout << "putData: DEBUG: sent block of 1024" << std::endl;
+				//std::cout << "putData: DEBUG: sent block of 1024" << std::endl;
 			} else {
 				sent += send(this->create_socket, message, length-sent, 0);
-				std::cout << "putData: DEBUG: sent small block" << std::endl;
+				//std::cout << "putData: DEBUG: sent smaller block" << std::endl;
 			}
+
+			percent = (sent*100)/length;
+			std::cout << "\r " << percent << "% finished";
+
 			//std::cout << "Successfully sent block of data" << std::endl;
 
 			/*
@@ -236,8 +241,9 @@ void Socket::putData() {	// work in progress
 			}
 			*/
 		}
-		std::cout << "putData: DEBUG: Read " << is.gcount() << " characters" << std::endl;
-		std::cout << "putData: DEBUG: Sent " << sent << " characters" << std::endl;
+		//std::cout << "putData: DEBUG: Read " << is.gcount() << " characters" << std::endl;
+		//std::cout << "putData: DEBUG: Sent " << sent << " characters" << std::endl;
+		std::cout << std::endl << "Upload finished!" << std::endl;
 	} else {
 		std::cout << "File can't be opened or doesn't exist" << std::endl;
 		send(this->create_socket, &error, sizeof(error), 0);
@@ -258,6 +264,9 @@ void Socket::getData() {	// finished
 	char get = '2';
 	char length[BUF] = {};
 	int received = 0;
+	char fileContent[BUF];
+	int success = 1;
+	int percent = 0;
 
 	int s = recv(create_socket, &length, BUF-1, 0);	// BUF-1 müsste ausreichen, da es nur eine Zahl sein sollte ;)
 	if(s > 0) {
@@ -282,26 +291,34 @@ void Socket::getData() {	// finished
 	out.open(fileName.c_str(), std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
 	if(out.is_open()) {std::cout << "getData: DEBUG: opened File" << std::endl;}
 
-	char fileContent[BUF];
-
 	std::cout << "getData: DEBUG: received = " << received << "; length = " << len << std::endl;
 	// Client: empfängt Datei
 	while (received < len) {
-		std::cout << "getData: DEBUG: preparing recv - len = " << len << "; received = " << received << std::endl;
+		//std::cout << "getData: DEBUG: preparing recv - len = " << len << "; received = " << received << std::endl;
 		s = recv(create_socket, fileContent, BUF, 0);
 
-		std::cout << "getDate: DEBUG: bis hierhin und nicht weiter?" << std::endl;
+		//std::cout << "getDate: DEBUG: bis hierhin und nicht weiter?" << std::endl;
 		if (s > 0) {
 			out.write(fileContent, s);
-			std::cout << "getData: DEBUG: write completed" << std::endl;
-			std::cout << "getData: GEBUG: oder doch?" << std::endl;
+			//std::cout << "getData: DEBUG: write completed" << std::endl;
+			//std::cout << "getData: GEBUG: oder doch?" << std::endl;
 		} else {
 			std::cout << "There is no such file" << std::endl;
+			success = 0;
 			break;
 		}
 		received += s;
+		//std::cout << "received/len = " << (received*100)/len << "; percent = " << percent << std::endl;
+		percent = (received*100)/len;
+		std::cout << "\r " << percent << "% finished";
 	}
+	//std::cout << "getData: DEBUG: received = " << received << "; length = " << len << std::endl;
 	out.close();
+	if (success) {
+		std::cout << std::endl << "Download finished!" << std::endl;
+	} else {
+		std::cout << std::endl << "File couldn't be downloaded!" << std::endl;
+	}
 
 	/*if(fs) {
 		char *buffer = new char[len];
@@ -391,4 +408,38 @@ void Socket::err() {	// finished
 		//std::cout << "err: DEBUG: nullterminieren funktioniert" << std::endl;
 		std::cout << message;
 	}
+}
+
+void Socket::login() {
+	std::string user = "";
+	std::string pass = "";
+	std::string login = "";
+
+	std::cout << "Please enter username: ";
+	while(user.empty()) {
+		getline(std::cin, user);
+		if(user.empty()) std::cout << "Incorrect username!" << std::endl;
+	}
+	while(pass.empty()) {
+		pass = getpass("Please enter password: ");
+		if(pass.empty()) std::cout << "Incorrect password!" << std::endl;
+	}
+
+	login.assign("0 ");
+	login.append(user);
+	login.append(" ");
+	login.append(pass);
+	std::cout << "login: DEBUG: login-message: " << login << std::endl;
+
+	send(this->create_socket, login.c_str(), login.length(), 0);
+
+	recv(create_socket, &status, 1, 0); //get status info if login success
+
+	if (status != '0') {
+		std::cout << "login: DEBUG: status != 0; couldn't log in" << std::endl;
+		err();
+		return;
+	}
+
+	std::cout << "Sucessfully logged in! =)" << std::endl;
 }

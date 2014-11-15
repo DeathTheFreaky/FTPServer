@@ -37,6 +37,9 @@ void Client::clientStart() {
 			socket->receiveAnswer();
 
 			switch(socket->getStatus()) {
+			case 0: // LOGIN
+				socket->login();
+				break;
 			case 1:	// LIST
 				socket->showList();
 				break;

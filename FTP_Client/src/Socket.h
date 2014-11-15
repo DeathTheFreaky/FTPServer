@@ -38,6 +38,7 @@ public:
 	int getStatus();
 	int getLength();
 	void err();
+	void login();
 
 private:
 	int create_socket;
