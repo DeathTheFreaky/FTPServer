@@ -29,7 +29,7 @@ void Client::clientStart() {
 			//std::cout << "start: DEBUG: " << input << std::endl;
 			input.clear();
 			while(input.empty()) {
-				std::getline(std::cin, input);	//zeilenweises einlesen der Eingabe
+				std::getline(std::cin, input);
 				//std::cout << "DEBUG-Before Send: " << input << std::endl;
 			}
 			socket->sendCommand(input);
@@ -44,7 +44,7 @@ void Client::clientStart() {
 				socket->showList();
 				break;
 			case 2: // GET
-				socket->getData(); // length?
+				socket->getData();
 				break;
 			case 3:	// PUT
 				socket->putData();
