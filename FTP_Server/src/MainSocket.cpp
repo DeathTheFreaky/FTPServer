@@ -24,7 +24,7 @@ MainSocket::MainSocket(int port) {
 
 	if (bind ( this->s, (struct sockaddr *) &this->address, sizeof (this->address)) != 0) {
 		std::cerr << "Error while binding the socket." << std::endl;
-		exit(4);
+		exit(5);
 	}
 
 	listen (this->s, 10);
@@ -34,6 +34,7 @@ MainSocket::MainSocket(int port) {
 
 MainSocket::~MainSocket() {
 	close(this->s);
+	std::cout << "Socket closed." << std::endl;
 }
 
 /**

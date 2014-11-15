@@ -12,7 +12,7 @@ Filemanager::Filemanager(std::string *baseDir) {
 	DIR *dir;
 	if ((dir = opendir(this->baseDir->c_str())) == NULL) {
 		std::cerr << "Error while opening directory: " << dir << std::endl;
-		exit(4);
+		exit(6);
 	}
 	closedir(dir);
 }

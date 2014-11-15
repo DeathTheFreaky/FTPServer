@@ -15,14 +15,14 @@ LDAPConnection::LDAPConnection(){
 	ldap_initialize(&this->ld, LDAP_HOST);
 	if(this->ld == NULL){
 		std::cerr << "ldap_initialization failed" << std::endl;
-		exit(4);
+		exit(7);
 	}
 
 	rc = ldap_simple_bind_s(this->ld, BIND_USER, BIND_PW);
 
 	if(rc != LDAP_SUCCESS){
 		std::cerr << "could not login to LDAP-server." << std::endl;
-		exit(5);
+		exit(8);
 	}
 }
 
