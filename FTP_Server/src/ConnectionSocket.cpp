@@ -23,10 +23,11 @@ ConnectionSocket::~ConnectionSocket() {
 void ConnectionSocket::start(){
 	std::string *command = new std::string;
 	this->welcome();
-	/*do{
+	do{
 		recvData(command);
 		cmd->process(command);
-	}while(work);*/
+		command->clear();
+	}while(work);
 	delete command;
 	delete this;
 }
@@ -44,13 +45,14 @@ void ConnectionSocket::welcome(){
 	wel.append("PUT <filename>\n");
 	wel.append("QUIT\n");
 	wel.append("------------------------------------\n");
+	wel.resize(BUF,'\0');
 	sendData(&wel);
 }
 
 void ConnectionSocket::recvData(std::string *cmd){
 	int size = 0;
 	char buffer[BUF];
-	cmd->assign("");
+	cmd->clear();
 	size = recv(this->socketID, &buffer, BUF-1, 0);
 	buffer[size] = '\0';
 	std::cout << "recv=" << buffer << "; size=" << size << std::endl;
@@ -64,17 +66,71 @@ void ConnectionSocket::recvData(std::string *cmd){
 	}
 }
 
+void ConnectionSocket::recvData(std::fstream *file, long fileSize){
+	int size = 0, recved = 0;
+	char buffer[BUF];
+	while(fileSize > recved){
+		size = recv(this->socketID, &buffer, BUF, 0);
+		if( size > 0){
+			file->write(buffer, size);
+			recved += size;
+			std::cout << "recved=" << recved << "; filesize=" << fileSize << std::endl;
+		}else if (size == 0){
+		   printf("Client closed remote socket\n");
+		   this->stop();
+		   return;
+		}else{
+		   perror("recv error");
+		   file->close();
+		   delete file;
+		   exit(1);
+		}
+	}
+}
+
 void ConnectionSocket::sendData(std::string *msg){
 	int sended = 0, s = 0;
 	int msglength = msg->length();
-	while(msglength != sended){
-		s = send(this->socketID, &msg[sended], (msglength - sended), 0);
+	while(msglength > sended){
+		s = send(this->socketID, &msg->c_str()[sended], (msglength - sended), 0);
 		if(s != -1){
 			sended += s;
+		}else{
+			break;
 		}
-		perror("Chalo");
 		std::cout << "msglength: " << msglength << "; sended: " << sended << " send returned: " << s << "; error: " << errno << std::endl;
-		for(int i = 0; i < 100000000; i++){}
 	}
 	std::cout << "DEBUG-ConnectionSocket-sendData: sended: " << *msg << "; with length: " << sended << std::endl;
+}
+
+void ConnectionSocket::sendData(std::fstream *file){
+	int sended = 0, s = 0;
+	// get length of file:
+	file->seekg(0, file->end);
+	long msglength = file->tellg();
+	file->seekg(0, file->beg);
+	std::cout << msglength << std::endl;
+	// ...buffer contains the entire file...
+
+	char buffer[BUF];
+	while(msglength > sended){
+		// read data as a block:
+		file->read(buffer,BUF);
+
+		if (file){
+			std::cout << "all characters read successfully.\n";
+		}else{
+			std::cout << "error: only " << file->gcount() << " could be read\n";
+			break;
+		}
+
+		s = send(this->socketID, &buffer, BUF, 0);
+		if(s != -1){
+			sended += s;
+		}else{
+			break;
+		}
+		std::cout << "msglength: " << msglength << "; sended: " << sended << " send returned: " << s << "; error: " << errno << std::endl;
+	}
+	std::cout << "DEBUG-ConnectionSocket-sendData: with length: " << sended << std::endl;
 }

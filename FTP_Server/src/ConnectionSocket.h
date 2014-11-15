@@ -14,9 +14,9 @@
 #include <errno.h>
 #include <unistd.h>
 #include <iostream>
+#include <fstream>
 #include "CommandHandler.h"
 #include "Filemanager.h"
-#include "File.h"
 
 class CommandHandler;
 
@@ -38,8 +38,9 @@ public:
 	void stop();
 
 	void sendData(std::string *msg);
-	void sendData(File *file);
+	void sendData(std::fstream *file);
 	void recvData(std::string *cmd);
+	void recvData(std::fstream *file, long fileSize);
 };
 
 

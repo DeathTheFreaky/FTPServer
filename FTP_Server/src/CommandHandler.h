@@ -24,8 +24,8 @@ private:
 
 	void error(std::string *command);
 	void list();
-	void get();
-	void put();
+	void get(std::string *file);
+	void put(std::string *file);
 	void quit();
 protected:
 

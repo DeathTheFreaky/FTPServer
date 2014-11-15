@@ -17,6 +17,10 @@ CommandHandler::~CommandHandler() {
 }
 
 void CommandHandler::process(std::string *command){
+	if(command->empty()){
+		this->conn->stop();
+		return;
+	}
 	std::string temp;
 	temp = command->substr(0, command->find_first_of(' '));
 	std::string errorcmd = temp;
@@ -24,9 +28,11 @@ void CommandHandler::process(std::string *command){
 	if(temp.compare("LIST") == 0){
 		list();
 	}else if(temp.compare("GET") == 0){
-
+		std::string file = command->substr(command->find_first_of(' ')+1);
+		get(&file);
 	}else if(temp.compare("PUT") == 0){
-
+		std::string file = command->substr(command->find_first_of(' ')+1);
+		put(&file);
 	}else if(temp.compare("QUIT") == 0){
 		quit();
 	}else{
@@ -54,6 +60,7 @@ void CommandHandler::list(){
 		msg.append("\n");
 	}
 	msg.append("------------------------------------\n");
+// TODO padding?
 	std::string init = "1 ";
 	init.append(std::to_string(msg.length()));
 	this->conn->sendData(&init);
@@ -66,12 +73,105 @@ void CommandHandler::list(){
 	delete fileList;
 }
 
-void CommandHandler::get(){
+void CommandHandler::get(std::string *fileName){
+	std::cout << *fileName << std::endl;
+	std::fstream *file;
+	if(fileName->find('\\') != std::string::npos){
+		std::cout << "DEBUG: Tried to navigate out of the dir." << std::endl;
+		std::string errormsg = "ERROR: A File is not allowed to contain a \"\\\"!\n";
+		error(&errormsg);
+		return;
+	}
+	if(!this->mang->fileExists(fileName)){
+		std::cout << "DEBUG: File \"" << *fileName << "\" not found!" << std::endl;
+		std::string errormsg = "ERROR: The file \"";
+		errormsg.append(*fileName);
+		errormsg.append("\" is not found or could not be opened!\n");
+		error(&errormsg);
+		return;
+	}
+	if((file = this->mang->getFile(fileName)) == NULL){
+		std::cout << "DEBUG: File \"" << *fileName << "\" could not be opened!" << std::endl;
+		std::string errormsg = "ERROR: The file \"";
+		errormsg.append(*fileName);
+		errormsg.append("\" is not found or could not be opened!\n");
+		error(&errormsg);
+		return;
+	}
+	if(!file->good()){
+		file->close();
+		std::string errormsg = "ERROR: Could not open the File \"";
+		errormsg.append(*fileName);
+		errormsg.append("\" correctly.\n");
+		error(&errormsg);
+		return;
+	}
 
+	std::string init = "2 ";
+
+	// get length of file:
+	file->seekg(0, file->end);
+	long msglength = file->tellg();
+	file->seekg(0, file->beg);
+	std::cout << msglength << std::endl;
+
+	init.append(std::to_string(msglength));
+	init.append(" ");
+	init.append(*fileName);
+	this->conn->sendData(&init);
+	this->conn->recvData(&init);
+	if(init.compare("2") != 0){
+		std::cerr << "An unexpected get-response was received. (" << init <<")\n" << "Canceling the operation!" << std::endl;
+		return;
+	}
+	this->conn->sendData(file);
+	std::cout << "GET finished."  << std::endl;
 }
 
-void CommandHandler::put(){
-
+void CommandHandler::put(std::string *fileName){
+	if(fileName->find('\\') != std::string::npos){
+		std::cout << "DEBUG: Tried to navigate out of the dir." << std::endl;
+		std::string errormsg = "ERROR: A File is not allowed to contain a \"\\\"!\n";
+		error(&errormsg);
+		return;
+	}
+	bool exists = this->mang->fileExists(fileName);
+	if(exists){
+		std::string errormsg = "ERROR: The File \"";
+		errormsg.append(*fileName);
+		errormsg.append("\" does already exist.\n");
+		error(&errormsg);
+		return;
+	}
+	std::fstream *file = this->mang->openFile(fileName);
+	if(!file->good()){
+		file->close();
+		std::string errormsg = "ERROR: Could not create the File \"";
+		errormsg.append(*fileName);
+		errormsg.append("\".\n");
+		error(&errormsg);
+		return;
+	}
+	std::string init = "3 ";
+	init.append(*fileName);
+	this->conn->sendData(&init);
+	this->conn->recvData(&init);
+	std::string temp = init.substr(0, init.find_first_of(' '));
+	init = init.substr(init.find_first_of(' ')+1);
+	if(temp.compare("3") != 0){
+		std::cerr << "An unexpected put-response was received. (" << init <<")\n" << "Canceling the operation!" << std::endl;
+		file->close();
+		delete file;
+		this->mang->deleteFile(fileName);
+		return;
+	}
+	long fileSize = std::stol(init);
+	this->conn->sendData(&temp);
+	this->conn->recvData(file, fileSize);
+	file->close();
+	delete file;
+	std::cout << "PUT lenght(string): " << init << "; lenght(long): " << fileSize << std::endl;
+	std::cout << "PUT finished."  << std::endl;
 }
 
 void CommandHandler::quit(){
