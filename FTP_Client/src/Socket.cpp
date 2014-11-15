@@ -203,13 +203,13 @@ void Socket::putData() {	// work in progress
 		//std::cout << "putData: DEBUG: answer received - Status = " << (char)status << std::endl;
 
 		if (status != '3') {
-			std::cout << "putData: DEBUG: wrong status" << std::endl;
+			//std::cout << "putData: DEBUG: wrong status" << std::endl;
 			err();
 			is.close();
 			return;
 		}
 
-		std::cout << "putData: DEBUG: Reading " << length << " characters... " << std::endl;
+		//std::cout << "putData: DEBUG: Reading " << length << " characters... " << std::endl;
 
 		// read and send data as block:
 		int sent = 0;
@@ -273,25 +273,25 @@ void Socket::getData() {	// finished
 		length[s] = '\0';
 		fileName.assign(length);
 		std::string _length = fileName.substr(fileName.find_first_of(' ')+1);
-		std::cout << "getData: DEBUG: _length = " << _length << std::endl;
+		//std::cout << "getData: DEBUG: _length = " << _length << std::endl;
 		fileName.assign(_length.substr(_length.find_first_of(' ')+1));
-		std::cout << "getData: DEBUG: filename = " << fileName << std::endl;
+		//std::cout << "getData: DEBUG: filename = " << fileName << std::endl;
 		_length = _length.substr(0, _length.find_first_of(' '));
 		len = atoi(_length.c_str());
-		std::cout << "getData: DEBUG: Laenge des Inhalts: " << len << std::endl;
-		std::cout << "getData: DEBUG: Name des Files: " << fileName << std::endl;
+		//std::cout << "getData: DEBUG: Laenge des Inhalts: " << len << std::endl;
+		//std::cout << "getData: DEBUG: Name des Files: " << fileName << std::endl;
 	}
 
 	// Client: sendet code 2 als Antwort
 	send(this->create_socket, &get, 1, 0);
-	std::cout << "getData: DEBUG: answer sent" << std::endl;
+	//std::cout << "getData: DEBUG: answer sent" << std::endl;
 
 	// Datei öffnen um zu schreiben
 	std::ofstream out;
 	out.open(fileName.c_str(), std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
-	if(out.is_open()) {std::cout << "getData: DEBUG: opened File" << std::endl;}
+	//if(out.is_open()) {std::cout << "getData: DEBUG: opened File" << std::endl;}
 
-	std::cout << "getData: DEBUG: received = " << received << "; length = " << len << std::endl;
+	//std::cout << "getData: DEBUG: received = " << received << "; length = " << len << std::endl;
 	// Client: empfängt Datei
 	while (received < len) {
 		//std::cout << "getData: DEBUG: preparing recv - len = " << len << "; received = " << received << std::endl;
