@@ -20,12 +20,13 @@ LDAPConnection::LDAPConnection(){
 
 	std::cout << "connected to LDAP-server." << std::endl;
 
-	rc = ldap_sasl_bind
+	rc = ldap_simple_bind_s(ld, BIND_USER, BIND_PW);
 
 	if(rc != LDAP_SUCCESS){
 		std::cerr << "could not login to LDAP-server." << std::endl;
 		exit(5);
 	}
+
 
 }
 
