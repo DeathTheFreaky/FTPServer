@@ -40,6 +40,7 @@ void ConnectionSocket::welcome(){
 	std::string wel;
 	wel.append("Welcome on the Server.\n");
 	wel.append("The following commands are valid:\n");
+	wel.append("LOGIN\n");
 	wel.append("LIST\n");
 	wel.append("GET <filename>\n");
 	wel.append("PUT <filename>\n");

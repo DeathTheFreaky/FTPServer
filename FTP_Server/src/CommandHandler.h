@@ -20,9 +20,11 @@ class ConnectionSocket;
 
 class CommandHandler {
 private:
+	bool loggedIn;
 	ConnectionSocket *conn;
 	Filemanager *mang;
 
+	void login();
 	void error(std::string *command);
 	void list();
 	void get(std::string *file);

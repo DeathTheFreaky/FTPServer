@@ -10,6 +10,7 @@
 CommandHandler::CommandHandler(ConnectionSocket *conn, Filemanager *mang) {
 	this->conn = conn;
 	this->mang = mang;
+	this->loggedIn = false;
 }
 
 CommandHandler::~CommandHandler() {
@@ -25,16 +26,21 @@ void CommandHandler::process(std::string *command){
 	temp = command->substr(0, command->find_first_of(' '));
 	std::string errorcmd = temp;
 	std::transform(temp.begin(), temp.end(), temp.begin(), toupper);
-	if(temp.compare("LIST") == 0){
+	if(temp.compare("LOGIN") == 0){
+		login();
+	}else if(temp.compare("LIST") == 0 && this->loggedIn){
 		list();
-	}else if(temp.compare("GET") == 0){
+	}else if(temp.compare("GET") == 0 && this->loggedIn){
 		std::string file = command->substr(command->find_first_of(' ')+1);
 		get(&file);
-	}else if(temp.compare("PUT") == 0){
+	}else if(temp.compare("PUT") == 0 && this->loggedIn){
 		std::string file = command->substr(command->find_first_of(' ')+1);
 		put(&file);
 	}else if(temp.compare("QUIT") == 0){
 		quit();
+	}else if(!this->loggedIn){
+		std::string errormsg = "You have to LOGIN first to get access to other commands then \"QUIT\".\n";
+		error(&errormsg);
 	}else{
 		std::string errormsg = "The command \"";
 		errormsg.append(errorcmd);
@@ -47,6 +53,15 @@ void CommandHandler::process(std::string *command){
 		errormsg.append("------------------------------------\n");
 		error(&errormsg);
 	}
+}
+
+void CommandHandler::login(){
+	std::string init = "0";
+	this->conn->sendData(&init);
+	this->conn->recvData(&init);
+	init.assign("0");
+	this->conn->sendData(&init);
+	this->loggedIn = true;
 }
 
 void CommandHandler::list(){
