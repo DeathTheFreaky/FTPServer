@@ -8,10 +8,9 @@
 #include "ConnectionSocket.h"
 #define BUF 1024
 
-ConnectionSocket::ConnectionSocket(int socketID, Filemanager *filemanager) {
+ConnectionSocket::ConnectionSocket(int socketID, Filemanager *filemanager, LDAPConnection *ldapcon) {
 	this->socketID = socketID;
-	this->filemanager = filemanager;
-	this->cmd = new CommandHandler(this, this->filemanager);
+	this->cmd = new CommandHandler(this, filemanager, ldapcon);
 	this->work = true;
 }
 

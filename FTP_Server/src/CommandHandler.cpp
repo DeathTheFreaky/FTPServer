@@ -7,9 +7,10 @@
 
 #include "CommandHandler.h"
 
-CommandHandler::CommandHandler(ConnectionSocket *conn, Filemanager *mang) {
+CommandHandler::CommandHandler(ConnectionSocket *conn, Filemanager *mang, LDAPConnection *ldapcon) {
 	this->conn = conn;
 	this->mang = mang;
+	this->ldapcon = ldapcon;
 	this->loggedIn = false;
 }
 
@@ -59,9 +60,24 @@ void CommandHandler::login(){
 	std::string init = "0";
 	this->conn->sendData(&init);
 	this->conn->recvData(&init);
-	init.assign("0");
-	this->conn->sendData(&init);
-	this->loggedIn = true;
+	std::string temp = init.substr(0, init.find_first_of(' '));
+	init = init.substr(init.find_first_of(' ')+1);
+	if(temp.compare("0") != 0){
+		std::cerr << "An unexpected login-response was received. (" << init <<")\n" << "Canceling the operation!" << std::endl;
+		return;
+	}
+	temp = init.substr(0, init.find_first_of(' '));
+	init = init.substr(init.find_first_of(' '));
+	bool auth = this->ldapcon->auth(&temp, &init);
+	if(auth){
+		init.assign("0");
+		this->conn->sendData(&init);
+		this->loggedIn = true;
+	}else{
+		std::string errormsg = "ERROR: The entered username and password are invalid!\n";
+		error(&errormsg);
+	}
+	return;
 }
 
 void CommandHandler::list(){

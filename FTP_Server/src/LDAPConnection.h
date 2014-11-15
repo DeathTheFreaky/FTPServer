@@ -22,7 +22,6 @@
 class LDAPConnection {
 private:
 	LDAP *ld;
-	LDAPMessage *result, *e;
 	char *attribs[2];
 protected:
 

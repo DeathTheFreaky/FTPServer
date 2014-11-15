@@ -15,6 +15,7 @@
 #include "ConnectionSocket.h"
 #include "Filemanager.h"
 #include "File.h"
+#include "LDAPConnection.h"
 
 class ConnectionSocket;
 
@@ -23,6 +24,7 @@ private:
 	bool loggedIn;
 	ConnectionSocket *conn;
 	Filemanager *mang;
+	LDAPConnection *ldapcon;
 
 	void login();
 	void error(std::string *command);
@@ -33,7 +35,7 @@ private:
 protected:
 
 public:
-	CommandHandler(ConnectionSocket *conn, Filemanager *mang);
+	CommandHandler(ConnectionSocket *conn, Filemanager *mang, LDAPConnection *ldapcon);
 	virtual ~CommandHandler();
 
 	void process(std::string *errorcmd);

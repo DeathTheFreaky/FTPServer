@@ -18,6 +18,7 @@
 #include "CommandHandler.h"
 #include "Filemanager.h"
 #include "File.h"
+#include "LDAPConnection.h"
 
 class CommandHandler;
 
@@ -25,14 +26,13 @@ class ConnectionSocket {
 private:
 	int socketID;
 	bool work;
-	Filemanager *filemanager;
 	CommandHandler *cmd;
 
 	void welcome();
 protected:
 
 public:
-	ConnectionSocket(int socketID, Filemanager *filemanager);
+	ConnectionSocket(int socketID, Filemanager *filemanager, LDAPConnection *ldapcon);
 	virtual ~ConnectionSocket();
 
 	void start();
