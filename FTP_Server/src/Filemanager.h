@@ -10,15 +10,14 @@
 
 #include <string>
 #include <vector>
-#include <iostream>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <cstdio>
 #include "File.h"
 
 class Filemanager {
 private:
 	std::string *baseDir;
-	DIR *dir;
 protected:
 
 public:
@@ -27,7 +26,9 @@ public:
 
 	bool isValid();
 	std::vector<std::string>* getFilelist();
-	File* getFile(std::string);
+	File* getFile(std::string *fileName, bool read);
+	bool fileExists(std::string *fileName);
+	void deleteFile(std::string *fileName);
 };
 
 #endif /* FILEMANAGER_H_ */

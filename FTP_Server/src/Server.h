@@ -13,11 +13,13 @@
 #include "Filemanager.h"
 #include "MainSocket.h"
 #include "ConnectionSocket.h"
+#include "LDAPConnection.h"
 
 class Server {
 private:
 	MainSocket *mainSocket;
 	Filemanager *filemanager;
+	LDAPConnection *ldapcon;
 protected:
 public:
 	Server(int port, std::string *dir);

@@ -10,22 +10,35 @@
 #include <sstream>
 #include <string>
 #include <cstdlib>
+#include <csignal>
 #include "Server.h"
 using namespace std;
 
 void printUsage(char *programName);
+void signalHandler(int sig);
+
+Server *server = NULL;
+string *baseDir;
 
 int main(int argc, char *argv[]) {
-	string *baseDir;
 	int port;
 	string _port;
 	stringstream convert;
-	Server *server;
+
+	if(signal(SIGINT, signalHandler) == SIG_ERR){
+		std::cout << "Unable to bind signalHandler. Stopping Server." << std::endl;
+		exit(1);
+	}
+
+	if(signal(SIGTERM, signalHandler) == SIG_ERR){
+		std::cout << "Unable to bind signalHandler. Stopping Server." << std::endl;
+		exit(1);
+	}
 
 	//check if the required parameters are passed
 	if(argc != 3){
 		printUsage(argv[0]);
-		exit(1);
+		exit(2);
 	}
 
 	//check if port is a number
@@ -34,14 +47,14 @@ int main(int argc, char *argv[]) {
 	if(!(convert >> port)){
 		cerr << "Error: The port must be a number." << endl;
 		printUsage(argv[0]);
-		exit(2);
+		exit(3);
 	}
 
 	//check if port is between 1024 and 65535
 	if(!(port >= 1024 && port <= 65535)){
 		cerr << "Error: The port must be between 1024 and 65535." << endl;
 		printUsage(argv[0]);
-		exit(3);
+		exit(4);
 	}
 
 	baseDir = new string;
@@ -65,4 +78,14 @@ int main(int argc, char *argv[]) {
  */
 void printUsage(char *programName){
 	cerr << "Usage: " << programName << " <PORT> <DIR>" << endl;
+}
+
+void signalHandler(int sig){
+	std::cout << std::endl << "Server is shutting down." << std::endl;
+	if(server != NULL){
+		delete server;
+		delete baseDir;
+	}
+	std::cout << "Server successfully shut down." << std::endl;
+	exit(0);
 }

@@ -15,11 +15,13 @@
 Server::Server(int port, std::string *dir) {
 	this->mainSocket = new MainSocket(port);
 	this->filemanager = new Filemanager(dir);
+	this->ldapcon = new LDAPConnection();
 }
 
 Server::~Server() {
 	delete this->mainSocket;
 	delete this->filemanager;
+	delete this->ldapcon;
 }
 
 /**
@@ -31,7 +33,7 @@ void Server::start(){
 	struct sockaddr_in cliaddress;
 	while(true){
 		std::cout << "DEBUG: wait accept" << std::endl;
-		conn = new ConnectionSocket(this->mainSocket->sAccept(&cliaddress), this->filemanager);
+		conn = new ConnectionSocket(this->mainSocket->sAccept(&cliaddress), this->filemanager, this->ldapcon);
 		std::cout << "DEBUG: accepted" <<std::endl;
 		conn->start();
 	}
