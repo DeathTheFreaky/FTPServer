@@ -55,7 +55,6 @@ void ConnectionSocket::recvData(std::string *cmd){
 	cmd->clear();
 	size = recv(this->socketID, &buffer, BUF-1, 0);
 	buffer[size] = '\0';
-	std::cout << "recv=" << buffer << "; size=" << size << std::endl;
 	if( size > 0){
 		cmd->append(buffer);
 	}else if (size == 0){
@@ -85,7 +84,6 @@ void ConnectionSocket::recvData(File *file, long fileSize){
 		   exit(1);
 		}
 	}
-	std::cout << "recved " << recved << " from " << fileSize << std::endl;
 }
 
 void ConnectionSocket::sendData(std::string *msg){
@@ -99,7 +97,6 @@ void ConnectionSocket::sendData(std::string *msg){
 			break;
 		}
 	}
-	std::cout << "DEBUG-ConnectionSocket-sendData: sended: " << *msg << "; with length: " << sended << std::endl;
 }
 
 void ConnectionSocket::sendData(File *file){
@@ -123,5 +120,4 @@ void ConnectionSocket::sendData(File *file){
 		}
 		//std::cout << "msglength: " << file->getLength() << "; sended: " << sended << " send returned: " << s << "; error: " << errno << std::endl;
 	}
-	std::cout << "DEBUG-ConnectionSocket-sendData: sended " << sended << " from " << length << std::endl;
 }
