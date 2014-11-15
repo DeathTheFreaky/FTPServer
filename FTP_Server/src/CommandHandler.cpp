@@ -117,7 +117,6 @@ void CommandHandler::get(std::string *fileName){
 void CommandHandler::put(std::string *fileName){
 	File *file;
 	if(fileName->find('\\') != std::string::npos){
-		std::cout << "DEBUG: Tried to navigate out of the dir." << std::endl;
 		std::string errormsg = "ERROR: A File is not allowed to contain a \"\\\"!\n";
 		error(&errormsg);
 		return;

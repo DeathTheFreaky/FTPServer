@@ -46,7 +46,6 @@ File* Filemanager::getFile(std::string *fileName, bool read) {
 	fullFileName.append("/");
 	fullFileName.append(*fileName);
 	if (file->open(&fullFileName, read)) {
-		std::cout << "opend succesfully file: " << *fileName << std::endl;
 		return file;
 	}
 	delete file;

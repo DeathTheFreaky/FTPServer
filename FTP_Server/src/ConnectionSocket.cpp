@@ -70,11 +70,10 @@ void ConnectionSocket::recvData(File *file, long fileSize){
 	int size = 0, recved = 0;
 	char buffer[BUF];
 	while(fileSize > recved){
-		size = recv(this->socketID, &buffer, BUF, 0);
+		size = recv(this->socketID, buffer, BUF, 0);
 		if( size > 0){
 			file->writeNextBytes(buffer, size);
 			recved += size;
-			std::cout << "recved=" << recved << "; filesize=" << fileSize << std::endl;
 		}else if (size == 0){
 		   printf("Client closed remote socket\n");
 		   this->stop();
@@ -86,19 +85,19 @@ void ConnectionSocket::recvData(File *file, long fileSize){
 		   exit(1);
 		}
 	}
+	std::cout << "recved " << recved << " from " << fileSize << std::endl;
 }
 
 void ConnectionSocket::sendData(std::string *msg){
 	int sended = 0, s = 0;
 	int msglength = msg->length();
 	while(msglength > sended){
-		s = send(this->socketID, &msg->c_str()[sended], (msglength - sended), 0);
+		s = send(this->socketID, &msg->c_str()[sended], (msglength - sended), MSG_NOSIGNAL);
 		if(s != -1){
 			sended += s;
 		}else{
 			break;
 		}
-		std::cout << "msglength: " << msglength << "; sended: " << sended << " send returned: " << s << "; error: " << errno << std::endl;
 	}
 	std::cout << "DEBUG-ConnectionSocket-sendData: sended: " << *msg << "; with length: " << sended << std::endl;
 }
@@ -112,16 +111,17 @@ void ConnectionSocket::sendData(File *file){
 		// read data as a block:
 		file->readNextBytes(buffer,BUF);
 
-		if((length-sended) > BUF)
-			s = send(this->socketID, &buffer, BUF, 0);
-		else
-			s = send(this->socketID, &buffer, (length-sended), 0);
+		if((length-sended) >= BUF){
+			s = send(this->socketID, buffer, BUF, MSG_NOSIGNAL);
+		}else{
+			s = send(this->socketID, buffer, length-sended, MSG_NOSIGNAL);
+		}
 		if(s != -1){
 			sended += s;
 		}else{
 			break;
 		}
-		std::cout << "msglength: " << file->getLength() << "; sended: " << sended << " send returned: " << s << "; error: " << errno << std::endl;
+		//std::cout << "msglength: " << file->getLength() << "; sended: " << sended << " send returned: " << s << "; error: " << errno << std::endl;
 	}
-	std::cout << "DEBUG-ConnectionSocket-sendData: with length: " << sended << std::endl;
+	std::cout << "DEBUG-ConnectionSocket-sendData: sended " << sended << " from " << length << std::endl;
 }

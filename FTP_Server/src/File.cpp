@@ -24,7 +24,6 @@ File::~File() {
 }
 
 bool File::open(std::string *fileName, bool read){
-	std::cout << "try open: " << *fileName << std::endl;
 	if(read){
 		this->file.open(fileName->c_str(), std::fstream::in | std::fstream::binary);
 	}else{
