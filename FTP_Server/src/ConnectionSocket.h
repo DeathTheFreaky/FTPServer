@@ -17,6 +17,7 @@
 #include <fstream>
 #include "CommandHandler.h"
 #include "Filemanager.h"
+#include "File.h"
 
 class CommandHandler;
 
@@ -38,9 +39,9 @@ public:
 	void stop();
 
 	void sendData(std::string *msg);
-	void sendData(std::fstream *file);
+	void sendData(File *file);
 	void recvData(std::string *cmd);
-	void recvData(std::fstream *file, long fileSize);
+	void recvData(File *file, long fileSize);
 };
 
 

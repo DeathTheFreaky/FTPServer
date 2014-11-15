@@ -10,11 +10,10 @@
 
 #include <string>
 #include <vector>
-#include <fstream>
-#include <iostream>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <cstdio>
+#include "File.h"
 
 class Filemanager {
 private:
@@ -27,10 +26,9 @@ public:
 
 	bool isValid();
 	std::vector<std::string>* getFilelist();
-	std::fstream* getFile(std::string *fileName);
+	File* getFile(std::string *fileName, bool read);
 	bool fileExists(std::string *fileName);
 	void deleteFile(std::string *fileName);
-	std::fstream* openFile(std::string *fileName);
 };
 
 #endif /* FILEMANAGER_H_ */

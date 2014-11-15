@@ -75,7 +75,7 @@ void CommandHandler::list(){
 
 void CommandHandler::get(std::string *fileName){
 	std::cout << *fileName << std::endl;
-	std::fstream *file;
+	File *file;
 	if(fileName->find('\\') != std::string::npos){
 		std::cout << "DEBUG: Tried to navigate out of the dir." << std::endl;
 		std::string errormsg = "ERROR: A File is not allowed to contain a \"\\\"!\n";
@@ -90,7 +90,8 @@ void CommandHandler::get(std::string *fileName){
 		error(&errormsg);
 		return;
 	}
-	if((file = this->mang->getFile(fileName)) == NULL){
+	if((file = this->mang->getFile(fileName, true)) == NULL){
+		delete file;
 		std::cout << "DEBUG: File \"" << *fileName << "\" could not be opened!" << std::endl;
 		std::string errormsg = "ERROR: The file \"";
 		errormsg.append(*fileName);
@@ -98,24 +99,9 @@ void CommandHandler::get(std::string *fileName){
 		error(&errormsg);
 		return;
 	}
-	if(!file->good()){
-		file->close();
-		std::string errormsg = "ERROR: Could not open the File \"";
-		errormsg.append(*fileName);
-		errormsg.append("\" correctly.\n");
-		error(&errormsg);
-		return;
-	}
 
 	std::string init = "2 ";
-
-	// get length of file:
-	file->seekg(0, file->end);
-	long msglength = file->tellg();
-	file->seekg(0, file->beg);
-	std::cout << msglength << std::endl;
-
-	init.append(std::to_string(msglength));
+	init.append(std::to_string(file->getLength()));
 	init.append(" ");
 	init.append(*fileName);
 	this->conn->sendData(&init);
@@ -125,10 +111,11 @@ void CommandHandler::get(std::string *fileName){
 		return;
 	}
 	this->conn->sendData(file);
-	std::cout << "GET finished."  << std::endl;
+	std::cout << "GET finished." << std::endl;
 }
 
 void CommandHandler::put(std::string *fileName){
+	File *file;
 	if(fileName->find('\\') != std::string::npos){
 		std::cout << "DEBUG: Tried to navigate out of the dir." << std::endl;
 		std::string errormsg = "ERROR: A File is not allowed to contain a \"\\\"!\n";
@@ -143,9 +130,9 @@ void CommandHandler::put(std::string *fileName){
 		error(&errormsg);
 		return;
 	}
-	std::fstream *file = this->mang->openFile(fileName);
-	if(!file->good()){
-		file->close();
+
+	if(!(file = this->mang->getFile(fileName, false))){
+		delete file;
 		std::string errormsg = "ERROR: Could not create the File \"";
 		errormsg.append(*fileName);
 		errormsg.append("\".\n");
@@ -168,9 +155,7 @@ void CommandHandler::put(std::string *fileName){
 	long fileSize = std::stol(init);
 	this->conn->sendData(&temp);
 	this->conn->recvData(file, fileSize);
-	file->close();
 	delete file;
-	std::cout << "PUT lenght(string): " << init << "; lenght(long): " << fileSize << std::endl;
 	std::cout << "PUT finished."  << std::endl;
 }
 

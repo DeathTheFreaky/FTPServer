@@ -39,16 +39,17 @@ std::vector<std::string>* Filemanager::getFilelist() {
 	return fileList;
 }
 
-std::fstream* Filemanager::getFile(std::string *fileName) {
-	std::string file;
-	file.append(*this->baseDir);
-	file.append("/");
-	file.append(*fileName);
-	std::fstream *is;
-	is = new std::fstream(file.c_str(), std::fstream::out | std::fstream::binary);
-	if (is) {
-		return is;
+File* Filemanager::getFile(std::string *fileName, bool read) {
+	File *file = new File();
+	std::string fullFileName;
+	fullFileName.append(*this->baseDir);
+	fullFileName.append("/");
+	fullFileName.append(*fileName);
+	if (file->open(&fullFileName, read)) {
+		std::cout << "opend succesfully file: " << *fileName << std::endl;
+		return file;
 	}
+	delete file;
 	return NULL;
 }
 
@@ -60,17 +61,6 @@ bool Filemanager::fileExists(std::string *fileName) {
 		}
 	}
 	return false;
-}
-
-std::fstream* Filemanager::openFile(std::string *fileName) {
-	std::string file;
-	file.append(*this->baseDir);
-	file.append("/");
-	file.append(*fileName);
-	std::fstream *is;
-	is = new std::fstream(file.c_str(),
-			std::fstream::out | std::fstream::binary);
-	return is;
 }
 
 void Filemanager::deleteFile(std::string *fileName) {

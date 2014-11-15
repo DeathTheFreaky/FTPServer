@@ -14,6 +14,7 @@
 #include <string>
 #include "ConnectionSocket.h"
 #include "Filemanager.h"
+#include "File.h"
 
 class ConnectionSocket;
 

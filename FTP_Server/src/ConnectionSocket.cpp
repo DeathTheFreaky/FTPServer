@@ -66,13 +66,13 @@ void ConnectionSocket::recvData(std::string *cmd){
 	}
 }
 
-void ConnectionSocket::recvData(std::fstream *file, long fileSize){
+void ConnectionSocket::recvData(File *file, long fileSize){
 	int size = 0, recved = 0;
 	char buffer[BUF];
 	while(fileSize > recved){
 		size = recv(this->socketID, &buffer, BUF, 0);
 		if( size > 0){
-			file->write(buffer, size);
+			file->writeNextBytes(buffer, size);
 			recved += size;
 			std::cout << "recved=" << recved << "; filesize=" << fileSize << std::endl;
 		}else if (size == 0){
@@ -103,34 +103,25 @@ void ConnectionSocket::sendData(std::string *msg){
 	std::cout << "DEBUG-ConnectionSocket-sendData: sended: " << *msg << "; with length: " << sended << std::endl;
 }
 
-void ConnectionSocket::sendData(std::fstream *file){
-	int sended = 0, s = 0;
-	// get length of file:
-	file->seekg(0, file->end);
-	long msglength = file->tellg();
-	file->seekg(0, file->beg);
-	std::cout << msglength << std::endl;
-	// ...buffer contains the entire file...
+void ConnectionSocket::sendData(File *file){
+	unsigned long sended = 0, length = file->getLength();
+	int s = 0;
 
 	char buffer[BUF];
-	while(msglength > sended){
+	while(length > sended){
 		// read data as a block:
-		file->read(buffer,BUF);
+		file->readNextBytes(buffer,BUF);
 
-		if (file){
-			std::cout << "all characters read successfully.\n";
-		}else{
-			std::cout << "error: only " << file->gcount() << " could be read\n";
-			break;
-		}
-
-		s = send(this->socketID, &buffer, BUF, 0);
+		if((length-sended) > BUF)
+			s = send(this->socketID, &buffer, BUF, 0);
+		else
+			s = send(this->socketID, &buffer, (length-sended), 0);
 		if(s != -1){
 			sended += s;
 		}else{
 			break;
 		}
-		std::cout << "msglength: " << msglength << "; sended: " << sended << " send returned: " << s << "; error: " << errno << std::endl;
+		std::cout << "msglength: " << file->getLength() << "; sended: " << sended << " send returned: " << s << "; error: " << errno << std::endl;
 	}
 	std::cout << "DEBUG-ConnectionSocket-sendData: with length: " << sended << std::endl;
 }
