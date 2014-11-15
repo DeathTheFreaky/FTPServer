@@ -373,7 +373,7 @@ void Socket::err() {	// finished
 	if (s > 0) {
 		length[s] = '\0';
 		fileName.assign(length);
-		std::cout << fileName << std::endl;
+		//std::cout << "err: DEBUG: length = "fileName << std::endl;
 		std::string length = fileName.substr(0);
 		//std::cout << "err: DEBUG: " << fileName << std::endl;
 		len = atoi(length.c_str());
