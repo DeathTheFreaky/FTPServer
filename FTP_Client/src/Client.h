@@ -24,6 +24,7 @@ private:
 	int port;
 	std::string toUpper(std::string);
 	bool quit;
+	Socket *socket;
 };
 
 #endif /* CLIENT_H_ */

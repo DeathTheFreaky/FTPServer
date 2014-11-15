@@ -35,7 +35,6 @@ public:
 	void showList();
 	void quit();
 	int getStatus();
-	int getLength();
 	void err();
 	void login();
 

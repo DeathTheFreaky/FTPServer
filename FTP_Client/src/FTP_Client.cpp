@@ -9,18 +9,31 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <signal.h>
 
 #include "Client.h"
 
 using namespace std;
 
+Client *client = NULL;
+
 void printUsage(char *programName);
+void signal_handler(int sig);
 
 int main(int argc, char *argv[]) {
 	string ip;
 	int port;
 	string _port;
-	Client *client;
+
+	//registering signal handler
+	if (signal(SIGINT, signal_handler) == SIG_ERR) {
+		std::cout << "Cannot handle SIGINT!" << std::endl;
+		return 1;
+	}
+	if (signal(SIGTERM, signal_handler) == SIG_ERR) {
+		std::cout << "Cannot handle SIGTERM!" << std::endl;
+		return 1;
+	}
 
 	// checks if required parameters are passed
 	if (argc != 3) {
@@ -45,9 +58,6 @@ int main(int argc, char *argv[]) {
 
 	ip = argv[1];
 
-	// debug message
-	//cout << "IP Adress: " << ip << endl << "Port: " << port << endl;
-
 	client = new Client(ip, port);
 
 	client->clientStart();
@@ -56,10 +66,19 @@ int main(int argc, char *argv[]) {
 }
 
 /**
- * The method prints the usage message for the program.
+ * Use:
+ * 		The method prints the usage message for the program.
+ *
  * Parameter:
  * 		char *programName: points to an array containing the program name
  */
 void printUsage(char *programName) {
 	cout << "Usage: " << programName << " <IP-ADRESS> <PORT>" << endl;
+}
+
+void signal_handler(int sig) {
+	if(sig == SIGINT) {
+		delete client;
+		exit(0);
+	}
 }
