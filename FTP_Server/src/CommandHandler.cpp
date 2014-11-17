@@ -57,6 +57,13 @@ void CommandHandler::process(std::string *command){
 }
 
 void CommandHandler::login(){
+	if(!this->conn->checkIP()){
+		std::string errormsg = "ERROR: You tried to login to often at a time. You have to wait ";
+		errormsg.append(std::to_string(this->conn->getWaitTime()));
+		errormsg.append("s until you can try again.\n");
+		error(&errormsg);
+		return;
+	}
 	std::string init = "0";
 	this->conn->sendData(&init);
 	this->conn->recvData(&init);
@@ -66,12 +73,14 @@ void CommandHandler::login(){
 		std::cerr << "An unexpected login-response was received. (" << init <<")\n" << "Canceling the operation!" << std::endl;
 		return;
 	}
+	this->conn->addLoginAttempt();
 	temp = init.substr(0, init.find_first_of(' '));
 	init = init.substr(init.find_first_of(' ')+1);
 	bool auth = this->ldapcon->auth(&temp, &init);
 	if(auth){
 		init.assign("0");
 		this->conn->sendData(&init);
+		this->conn->resetIP();
 		this->loggedIn = true;
 	}else{
 		std::string errormsg = "ERROR: The entered username and password are invalid!\n";
@@ -198,7 +207,6 @@ void CommandHandler::quit(){
 void CommandHandler::error(std::string *errormsg){
 	std::string error = "5 ";
 	error.append(std::to_string(errormsg->length()));
-	std::cout << "DEBUG-CommandHandler-error: " << error << std::endl;
 	std::string temp = "";
 	this->conn->sendData(&error);
 	this->conn->recvData(&temp);

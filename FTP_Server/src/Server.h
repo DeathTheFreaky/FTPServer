@@ -10,6 +10,7 @@
 
 #include <string>
 #include <thread>
+#include <map>
 #include "Filemanager.h"
 #include "MainSocket.h"
 #include "ConnectionSocket.h"
@@ -20,6 +21,7 @@ private:
 	MainSocket *mainSocket;
 	Filemanager *filemanager;
 	LDAPConnection *ldapcon;
+	std::map<std::string, std::array<long,2>> *ips;
 protected:
 public:
 	Server(int port, std::string *dir);
