@@ -76,6 +76,13 @@ void printUsage(char *programName) {
 	cout << "Usage: " << programName << " <IP-ADRESS> <PORT>" << endl;
 }
 
+/**
+ * Use:
+ * 		Signal handler to intercept SIGINT and SIGTERM signals
+ *
+ * Parameter:
+ * 		int sig: number of signal
+ */
 void signal_handler(int sig) {
 	if(sig == SIGINT) {
 		delete client;

@@ -18,6 +18,13 @@ Client::~Client() {
 	delete this->socket;
 }
 
+/**
+ * Use:
+ * 		starts the FTP client. Basically manages everything
+ *
+ * Parameter:
+ * 		none
+ */
 void Client::clientStart() {
 	std::string input = "";
 	if (socket->conn() == true) {
@@ -27,9 +34,9 @@ void Client::clientStart() {
 			while(input.empty()) {
 				std::getline(std::cin, input);
 			}
-			socket->sendCommand(input);
+			socket->sendCommand(input);		// Client command to Server
 			std::cout << std::endl;
-			socket->receiveAnswer();
+			socket->receiveAnswer();		// Client receives Server's answer
 
 			switch(socket->getStatus()) {
 			case 0: // LOGIN
