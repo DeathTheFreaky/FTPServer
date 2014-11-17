@@ -19,9 +19,10 @@ ConnectionSocket::ConnectionSocket(int socketID, Filemanager *filemanager,
 }
 
 ConnectionSocket::~ConnectionSocket() {
+	close(this->socketID);
+	std::cout << "Connection to " << *this->currentIP << " closed." << std::endl;
 	delete this->cmd;
 	delete this->currentIP;
-	close(this->socketID);
 }
 
 void ConnectionSocket::start() {
@@ -33,11 +34,15 @@ void ConnectionSocket::start() {
 		command->clear();
 	} while (work);
 	delete command;
-	delete this;
 }
 
 void ConnectionSocket::stop() {
 	this->work = false;
+}
+
+void ConnectionSocket::serverStop(){
+	std::cout << "Terminating" << std::endl;
+	delete this;
 }
 
 void ConnectionSocket::welcome() {

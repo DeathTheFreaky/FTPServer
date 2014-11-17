@@ -10,18 +10,24 @@
 
 #include <string>
 #include <thread>
+#include <vector>
 #include <map>
 #include "Filemanager.h"
 #include "MainSocket.h"
 #include "ConnectionSocket.h"
 #include "LDAPConnection.h"
+#include "Threadmanager.h"
 
 class Server {
 private:
 	MainSocket *mainSocket;
 	Filemanager *filemanager;
 	LDAPConnection *ldapcon;
+	Threadmanager *threadmang;
 	std::map<std::string, std::array<long,2>> *ips;
+	std::vector<ConnectionSocket*> *connections;
+	std::vector<std::thread> *threadList;
+	std::thread t;
 protected:
 public:
 	Server(int port, std::string *dir);

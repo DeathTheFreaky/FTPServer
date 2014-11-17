@@ -8,11 +8,14 @@
 #include "File.h"
 
 File::File(std::string *fileName, bool read) {
+	std::mutex mtx;
+	mtx.lock();
 	if(read){
 		this->file.open(fileName->c_str(), std::fstream::in | std::fstream::binary);
 	}else{
 		this->file.open(fileName->c_str(), std::fstream::out | std::fstream::binary);
 	}
+	mtx.unlock();
 }
 
 File::File(){
@@ -24,11 +27,14 @@ File::~File() {
 }
 
 bool File::open(std::string *fileName, bool read){
+	std::mutex mtx;
+	mtx.lock();
 	if(read){
 		this->file.open(fileName->c_str(), std::fstream::in | std::fstream::binary);
 	}else{
 		this->file.open(fileName->c_str(), std::fstream::out | std::fstream::binary);
 	}
+	mtx.unlock();
 	return this->file.is_open();
 }
 
