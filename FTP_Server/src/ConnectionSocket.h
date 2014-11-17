@@ -17,8 +17,6 @@
 #include <fstream>
 #include <map>
 #include <ctime>
-#include <thread>
-#include <csignal>
 #include "CommandHandler.h"
 #include "Filemanager.h"
 #include "File.h"
@@ -47,7 +45,6 @@ public:
 
 	void start();
 	void stop();
-	void serverStop();
 
 	bool checkIP();
 	void addLoginAttempt();

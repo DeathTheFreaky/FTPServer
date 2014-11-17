@@ -34,15 +34,11 @@ void ConnectionSocket::start() {
 		command->clear();
 	} while (work);
 	delete command;
+	delete this;
 }
 
 void ConnectionSocket::stop() {
 	this->work = false;
-}
-
-void ConnectionSocket::serverStop(){
-	std::cout << "Terminating" << std::endl;
-	delete this;
 }
 
 void ConnectionSocket::welcome() {

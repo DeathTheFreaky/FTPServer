@@ -17,17 +17,9 @@ Server::Server(int port, std::string *dir) {
 	this->filemanager = new Filemanager(dir);
 	this->ldapcon = new LDAPConnection();
 	this->ips = new std::map<std::string, std::array<long, 2>>;
-	this->threadList = new std::vector<std::thread>();
-	this->connections = new std::vector<ConnectionSocket*>();
-	this->threadmang = new Threadmanager(this->threadList, this->connections);
-	this->t = std::thread(&Threadmanager::manage, this->threadmang);
 }
 
 Server::~Server() {
-	this->threadmang->stop();
-	this->t.join();
-	delete this->threadmang;
-	delete this->threadList;
 	delete this->mainSocket;
 	delete this->filemanager;
 	delete this->ldapcon;
@@ -39,6 +31,7 @@ Server::~Server() {
  * The server starts to accept incoming clients and processes them.
  */
 void Server::start() {
+	std::thread t;
 	ConnectionSocket *conn;
 	struct sockaddr_in cliaddress;
 	while (true) {
@@ -46,13 +39,9 @@ void Server::start() {
 		conn = new ConnectionSocket(this->mainSocket->sAccept(&cliaddress),
 				this->filemanager, this->ldapcon,
 				new std::string(inet_ntoa(cliaddress.sin_addr)), this->ips);
-		this->connections->push_back(conn);
-		threadList->push_back(std::thread(&ConnectionSocket::start, conn));
-		/*conn = new ConnectionSocket(this->mainSocket->sAccept(&cliaddress),
-		 this->filemanager, this->ldapcon,
-		 new std::string(inet_ntoa(cliaddress.sin_addr)), this->ips);*/
+		t = std::thread(&ConnectionSocket::start, conn);
+		t.detach();
 		std::cout << "accepted connection" << std::endl;
-		//conn->start();
 	}
 }
 

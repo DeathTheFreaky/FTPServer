@@ -5,9 +5,9 @@ LDAPFLAGS=-DLDAP_DEPRECATED -lldap
 
 all: FTP_Server
 
-FTP_Server: clean copy main cmdh conns file filemang ldap mains serv threadmang
+FTP_Server: clean copy main cmdh conns file filemang ldap mains serv
 	mv *.o compile
-	$(CC) compile/FTP_Server.o compile/CommandHandler.o compile/ConnectionSocket.o compile/File.o compile/Filemanager.o compile/LDAPConnection.o compile/MainSocket.o compile/Server.o compile/Threadmanager.o -o FTP_Server $(LDAPFLAGS)
+	$(CC) compile/FTP_Server.o compile/CommandHandler.o compile/ConnectionSocket.o compile/File.o compile/Filemanager.o compile/LDAPConnection.o compile/MainSocket.o compile/Server.o -o FTP_Server $(LDAPFLAGS)
 
 copy:	src
 	mkdir compile
@@ -37,9 +37,6 @@ mains: src/MainSocket.cpp
 
 serv: src/Server.cpp
 	$(CC) $(CFLAGS) -c src/Server.cpp
-
-threadmang: src/Threadmanager.cpp
-	$(CC) $(CFLAGS) $(TFLAGS) -c src/Threadmanager.cpp
 
 clean:
 	rm -f -R compile
