@@ -22,7 +22,7 @@
 #include "File.h"
 #include "LDAPConnection.h"
 
-#define TIMEOUT 10
+#define TIMEOUT 20
 
 class CommandHandler;
 

@@ -62,6 +62,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "port = " << port << "; dir = " << *baseDir << endl;
 
+	//creating and starting server
 	server = new Server(port, baseDir);
 	server->start();
 
@@ -80,6 +81,11 @@ void printUsage(char *programName){
 	cerr << "Usage: " << programName << " <PORT> <DIR>" << endl;
 }
 
+/**
+ * The signalHandler shuts the server on an SIGINT and an SIGTERM down
+ * Parameter:
+ * 		int sig: the signal that interrupted the program
+ */
 void signalHandler(int sig){
 	std::cout << std::endl << "Server is shutting down." << std::endl;
 	if(server != NULL){

@@ -22,6 +22,7 @@ MainSocket::MainSocket(int port) {
 	this->address.sin_addr.s_addr = INADDR_ANY;
 	this->address.sin_port = htons (this->port);
 
+	//binds socket
 	if (bind ( this->s, (struct sockaddr *) &this->address, sizeof (this->address)) != 0) {
 		std::cerr << "Error while binding the socket." << std::endl;
 		exit(5);
@@ -41,6 +42,8 @@ MainSocket::~MainSocket() {
  * The server accepts the next client.
  * Parameter:
  * 		cliaddress: a pointer to the pointer of the struct where the client address information should be put
+ * Return:
+ * 		int: socketID of accepted connection
  */
 int MainSocket::sAccept(struct sockaddr_in *cliaddress){
 	return accept(this->s, (struct sockaddr *) cliaddress, &this->addrlen);

@@ -8,6 +8,7 @@
 #include "Server.h"
 
 /**
+ * The Server manages the whole server
  * Parameter:
  * 		port: The port the server should listen at
  * 		dir: The pointer to the string where the path to the used directory is saved
@@ -36,6 +37,7 @@ void Server::start() {
 	struct sockaddr_in cliaddress;
 	while (true) {
 		std::cout << "waiting for connection" << std::endl;
+		//creating new connection and starting to handle it
 		conn = new ConnectionSocket(this->mainSocket->sAccept(&cliaddress),
 				this->filemanager, this->ldapcon,
 				new std::string(inet_ntoa(cliaddress.sin_addr)), this->ips);
